@@ -1,0 +1,59 @@
+﻿from xml.dom import minidom
+import urllib.request
+import timeit
+start = timeit.default_timer() #contador tempo execução geral
+
+#Livraria urllib é importada e usa retrieve para pegar o link, filename gera o arquivo coletado da web
+urllib.request.urlretrieve("http://www.camara.gov.br/SitCamaraWS/Deputados.asmx/ObterDeputados", filename="C:/Users/Matheus/PycharmProjects/crawler/XMLDeputados.xml")
+doc = minidom.parse("XMLDeputados.xml") #parse dentro do arquivo xml da web dos deputados
+urllib.request.urlretrieve("http://legis.senado.leg.br/dadosabertos/senador/lista/atual", filename="C:/Users/Matheus/PycharmProjects/crawler/XMLSenadores.xml")
+doc2 = minidom.parse("XMLSenadores.xml") #parse dentro do arquivo xml da web dos senadores
+
+#abre os arquivos para escrita
+f = open('Deputados.csv', 'w', newline='')
+g = open('Senadores.csv', 'w', newline='')
+i = 0 #contador deputados
+j = 0 #contador senadores
+
+startdeps = timeit.default_timer() #inicia o timer de execução para deputado
+depts = doc.getElementsByTagName("deputado") #coleta os elementos que estão dentro da tag <deputado>
+for deputado in depts: #vascula dentro de deputados
+	f.write('\n')
+	name = doc.getElementsByTagName("nome")[i] #coleta os dados com a tag <nome>
+	partido = doc.getElementsByTagName("partido")[i]
+	idcadastro = doc.getElementsByTagName("ideCadastro")[i]
+	name.firstChild.data.encode('utf-8') #encode necessário na hora de escrever dentro do arquivo
+	partido.firstChild.data.encode('utf-8')
+	idcadastro.firstChild.data.encode('utf-8')
+	f.write(name.firstChild.data + ";") #escreve nome dentro do arquivo
+	f.write(partido.firstChild.data + ";") 
+	f.write(idcadastro.firstChild.data)
+	i += 1
+f.close()
+stopdeps = timeit.default_timer()
+
+startsens = timeit.default_timer()
+senad = doc2.getElementsByTagName("Parlamentar") #coleta os elementos que estão dentro da tag <Parlamentar>
+for Parlamentar in senad:
+    g.write('\n')
+    name2 = doc2.getElementsByTagName("NomeCompletoParlamentar")[j]
+    partido = doc2.getElementsByTagName("SiglaPartidoParlamentar")[j]
+    codparlamento = doc2.getElementsByTagName("CodigoParlamentar")[j]
+    name2.firstChild.data.encode('utf-8')
+    partido.firstChild.data.encode('utf-8')
+    codparlamento.firstChild.data.encode('utf-8')
+    g.write(name2.firstChild.data + ";")
+    g.write(partido.firstChild.data + ";")
+    g.write(codparlamento.firstChild.data)
+    j += 1
+stopsens = timeit.default_timer()
+g.close()
+
+stop = timeit.default_timer()
+print(stop - start, " segundos")
+print(stopdeps - startdeps, " segundos para buscar e armazenar os deputados")
+print(stopsens - startsens, " segundos para buscar e armazenar os senadores")
+print("Deputados: %d" % i)
+print("Deputados por seg: %d" % (int(i) / int((stopdeps-startdeps))))
+print("Senadores: %d" % j)
+#print("Senadores por seg: %d" % (int(j) / int((stopsens-startsens))))
