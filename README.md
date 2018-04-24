@@ -2,7 +2,7 @@
 Python webcrawler to obtain data from Brazilian Politicians (dep/sen)
 
 *Urllib.request
-urllib.request.urlretrieve(http://www.camara.gov.br/SitCamaraWS/Deputados.asmx/ObterDeputados
+urllib.request.urlretrieve(http://www.camara.gov.br/SitCamaraWS/Deputados.asmx/ObterDeputados)
 
 *Xml.dom
 doc = minidom.parse("XMLDeputados.xml")
@@ -21,5 +21,3 @@ CSV archive – DadosBD.csv
 Active politicians
 Complete name, parliamentary name, party, state 
 CSV archive – DadosBD.csv
-
-
